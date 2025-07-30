@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import logging
 import os
-import webserver
+# import webserver  # Conditionally imported later
 from dotenv import load_dotenv
 from datetime import datetime
 import random
@@ -147,5 +147,16 @@ async def cuanto(ctx):
     except Exception as e:
         await ctx.send(f"An error occurred while fetching test event information: {str(e)}")
 
-webserver.keep_alive()
-bot.run(token, log_handler=handlers, log_level=logging.DEBUG)
+if __name__ == "__main__":
+    # Check if webserver should be enabled
+    use_webserver = os.getenv('USE_WEBSERVER', 'false').lower() == 'true'
+    
+    if use_webserver:
+        import webserver
+        webserver.keep_alive()
+        print("Webserver enabled")
+    else:
+        print("Webserver disabled")
+    
+    print("Starting Discord bot...")
+    bot.run(token, log_handler=handlers, log_level=logging.DEBUG)
