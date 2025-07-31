@@ -13,12 +13,10 @@ zevax_event_id = os.getenv("ZEVAX_EVENT_ID")
 image_path = os.getenv("MAIN_IMAGE")
 zevax_user_id = os.getenv("ZEVAX_USER_ID")
 test_event_id = os.getenv("TEST_EVENT_ID")
-test_user_id = os.getenv("TEST_ID_USER")    
 
 handlers = logging.FileHandler(filename='zevaxt-bot.log', encoding='utf-8', mode='w')
 intents = discord.Intents.default()
 intents.message_content = True
-intents.guild_scheduled_events = True
 intents.members = True
 
 bot = commands.Bot(command_prefix='z!', intents=intents, help_command=None)
@@ -88,9 +86,8 @@ async def tiktak(ctx):
     
     try:
         event_id = int(zevax_event_id)
-        
         events = ctx.guild.scheduled_events
-        
+
         target_event = None
         for event in events:
             if event.id == event_id:
@@ -156,7 +153,12 @@ async def test_event(ctx):
         
     try:
         event_id = int(test_event_id)
-        target_event = event_id
+
+        target_event = None
+        for event in events:
+            if event.id == event_id:
+                target_event = event
+                break
         
         if target_event is None:
             await ctx.send(f"el evento no existe, pije")
