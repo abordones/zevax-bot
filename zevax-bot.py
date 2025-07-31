@@ -41,9 +41,11 @@ async def on_message(message):
                 return
             else:
                 responses = [
-                    "**NEGRO ¿QUE COJONES HACES? TIENES POCO TIEMPO PARA ESCRIBIR Y PIERDES TU TIEMPO CON LAS CARNALIDES DEL MUNDO**",
+                    "**NEGRO ¿QUE COJONES HACES? TIENES POCO TIEMPO PARA ESCRIBIR Y LO PIERDES CON LAS CARNALIDES DE ESTE MUNDO**",
                     "**LA FURIA DEL SEOL CAERA SOBRE TI, ZEVAXTIANS, SI SIGUES PROCASTINANDO COMO UN PUTO FRACASADO**",
-                    "**TUBOS Y VIDRIOS A ESTE PERDEDOR... TUBOS Y VIDRIOS SI NO TERMINAS LA ESCRITURA CALENDARIZADA PARA EL 8 DE SEPTIEMBRE DE 2025 A LAS 3 DE LA TARDE, ZEVAXTIANS**"
+                    "**TUBOS Y VIDRIOS A ESTE PERDEDOR... TUBOS Y VIDRIOS SI NO TERMINAS LA ESCRITURA CALENDARIZADA PARA EL 8 DE SEPTIEMBRE DE 2025 A LAS 3 DE LA TARDE, ZEVAXTIANS**",
+                    "**APOCO SI ESO VA A LLENAR TU CV, HIJITO, MEJOR PONTE A ESCRIBIR SI NO QUIERES QUE TE CORTEN LA CABEZA A MACHETAZOS**",
+                    "**¿EN SERIO LE SEGUIRAN HABLANDOLE A ESTE IMPRESENTABLE? ¿QUE NO VEN QUE LO VAN A VIOLAR Y DESMEMBRAR EL 8 DE SEPTIEMBRE DE 2025, SI NO TERMINA SU ESCRITURA?**"
                 ]
                 
                 selected_response = random.choice(responses)
@@ -116,7 +118,7 @@ async def tictac(ctx):
             if not time_parts:
                 time_left_str = "⏰🐇 **EL AZZOTH YA VIENE**"
             else:
-                time_left_str = f"### ⏰🐇 **Zevaxtians tiene menos de {', '.join(time_parts)} antes de que el el sendero de Samael en el Árbol Qlifotico colapse sobre sí mismo y active el ángulo anaretico del Tetraktys sellado en la onceava capa del Zóhar negativo.**"
+                time_left_str = f"### ⏰🐇 **<@555161083447345155> tiene menos de {', '.join(time_parts)} antes de que el el sendero de Samael en el Árbol Qlifotico colapse sobre sí mismo y active el ángulo anaretico del Tetraktys sellado en la onceava capa del Zóhar negativo.**"
         
         embed = discord.Embed(
             title=f"📅 {target_event.name}",
