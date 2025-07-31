@@ -151,12 +151,9 @@ async def tiktak(ctx):
 async def test_event(ctx):
 
     if not test_event_id:
-        await ctx.send("El el id no esta en el env, pibe")
+        await ctx.send("El id no esta en el env, pibe")
         return
-
-    if not test_user_id:
-        await ctx.send("El el id de usuario no esta en el env, pibe")
-        return
+        
     try:
         event_id = int(test_event_id)
         
