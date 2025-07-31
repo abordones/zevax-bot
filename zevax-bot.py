@@ -125,7 +125,7 @@ async def cuanto(ctx):
             if not time_parts:
                 time_left_str = "⏰🐇 **EL AZZOTH YA VIENE**"
             else:
-                time_left_str = f"# ⏰🐇 **QUEDAN {', '.join(time_parts)} PARA LA NARCOEJECUCION DEL MARRONAZO DE ZEVAX**"
+                time_left_str = f"# ⏰🐇 **Zevaxtians tiene menos de {', '.join(time_parts)} antes de que el el sendero de Samael en el Árbol Qlifotico colapse sobre sí mismo y active el ángulo anaretico del Tetraktys sellado en la onceava capa del Zóhar negativo."
         
         embed = discord.Embed(
             title=f"📅 {target_event.name}",
