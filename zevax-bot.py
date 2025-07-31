@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import logging
 import os
-# import webserver  # Conditionally imported later
+import webserver
 from dotenv import load_dotenv
 from datetime import datetime
 import random
@@ -33,14 +33,14 @@ async def on_message(message):
     if zevax_user_id:
         recent_user_id = str(message.author.id)
         if recent_user_id == zevax_user_id:
-            print(f"   Usuario: {message.author.display_name}")
+            print(f"   user: {message.author.display_name}")
             print(f"   ID: {recent_user_id}")
-            print(f"   Contenido: {message.content[:50]}{'...' if len(message.content) > 50 else ''}")
+            print(f"   content: {message.content[:50]}{'...' if len(message.content) > 50 else ''}")
         else:
-            print(f"   Usuario: {message.author.display_name}")
+            print(f"   user: {message.author.display_name}")
             print(f"   ID: {recent_user_id}")
-            print(f"   ID Objetivo: {zevax_user_id}")
-            print(f"   Contenido: {message.content[:50]}{'...' if len(message.content) > 50 else ''}")
+            print(f"   target ID: {zevax_user_id}")
+            print(f"   content: {message.content[:50]}{'...' if len(message.content) > 50 else ''}")
 
     if zevax_user_id and str(message.author.id) == zevax_user_id:
         random_roll = random.randint(1, 15) # 1 out of 15 chance
@@ -67,10 +67,8 @@ async def on_message(message):
                     file = discord.File(image_path, filename="event_image.png")
                     embed.set_image(url="attachment://event_image.png")
                     await message.reply(file=file, embed=embed)
-                    print("Respuesta enviada con imagen")
                 else:
                     await message.reply(embed=embed)
-                    print("Respuesta enviada sin imagen")
 
     await bot.process_commands(message)
     
@@ -110,7 +108,7 @@ async def cuanto(ctx):
         
 
         if time_diff.total_seconds() <= 0:
-            time_left_str = "**LA HORA DE MORIR HA LLEGADO**"
+            time_left_str = "**YA LLEGO TU HORA PUTO FRACASADO**"
         else:
             days = time_diff.days
             hours, remainder = divmod(time_diff.seconds, 3600)
@@ -148,15 +146,7 @@ async def cuanto(ctx):
         await ctx.send(f"An error occurred while fetching test event information: {str(e)}")
 
 if __name__ == "__main__":
-    # Check if webserver should be enabled
-    use_webserver = os.getenv('USE_WEBSERVER', 'false').lower() == 'true'
-    
-    if use_webserver:
-        import webserver
-        webserver.keep_alive()
-        print("Webserver enabled")
-    else:
-        print("Webserver disabled")
+    webserver.keep_alive()
     
     print("Starting Discord bot...")
     bot.run(token, log_handler=handlers, log_level=logging.DEBUG)
