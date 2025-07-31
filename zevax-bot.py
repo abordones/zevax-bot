@@ -32,19 +32,7 @@ async def on_ready():
 async def on_message(message):
     if message.author == bot.user:
         return
-
-    if zevax_user_id:
-        recent_user_id = str(message.author.id)
-        if recent_user_id == zevax_user_id:
-            print(f"   user: {message.author.display_name}")
-            print(f"   ID: {recent_user_id}")
-            print(f"   content: {message.content[:50]}{'...' if len(message.content) > 50 else ''}")
-        else:
-            print(f"   user: {message.author.display_name}")
-            print(f"   ID: {recent_user_id}")
-            print(f"   target ID: {zevax_user_id}")
-            print(f"   content: {message.content[:50]}{'...' if len(message.content) > 50 else ''}")
-
+        
     if zevax_user_id and str(message.author.id) == zevax_user_id:
         random_roll = random.randint(1, 15) # 1 out of 15 chance
 
@@ -53,7 +41,7 @@ async def on_message(message):
                 return
             else:
                 responses = [
-                    "**NEGRO IMPURO ¿QUE COJONES HACES, ZEVAXTIANS? TIENES POCO TIEMPO PARA ESCRIBIR Y PIERDES TU TIEMPO CON LAS CARNALIDES DEL MUNDO**",
+                    "**NEGRO ¿QUE COJONES HACES? TIENES POCO TIEMPO PARA ESCRIBIR Y PIERDES TU TIEMPO CON LAS CARNALIDES DEL MUNDO**",
                     "**LA FURIA DEL SEOL CAERA SOBRE TI, ZEVAXTIANS, SI SIGUES PROCASTINANDO COMO UN PUTO FRACASADO**",
                     "**TUBOS Y VIDRIOS A ESTE PERDEDOR... TUBOS Y VIDRIOS SI NO TERMINAS LA ESCRITURA CALENDARIZADA PARA EL 8 DE SEPTIEMBRE DE 2025 A LAS 3 DE LA TARDE, ZEVAXTIANS**"
                 ]
@@ -63,28 +51,6 @@ async def on_message(message):
                 embed = discord.Embed(
                     title=f"⏰🐇",
                     description=selected_response,
-                    color=0xff6b35
-                )
-                
-                if image_path and os.path.exists(image_path):
-                    file = discord.File(image_path, filename="event_image.png")
-                    embed.set_image(url="attachment://event_image.png")
-                    await message.reply(file=file, embed=embed)
-                else:
-                    await message.reply(embed=embed)
-
-    if test_user_id and str(message.author.id) == test_user_id:
-        random_roll = random.randint(1, 3) # 1 out of 3 chance
-
-        if (random_roll == 1):
-            if (message.content.startswith('z!')):
-                return
-            else:
-                response = "**TESTING**"
-
-                embed = discord.Embed(
-                    title=f"⏰🐇",
-                    description=response,
                     color=0xff6b35
                 )
                 
@@ -150,7 +116,7 @@ async def tictac(ctx):
             if not time_parts:
                 time_left_str = "⏰🐇 **EL AZZOTH YA VIENE**"
             else:
-                time_left_str = f"# ⏰🐇 **QUEDAN {', '.join(time_parts)} PARA LA NARCOEJECUCION DEL MARRONAZO DE ZEVAX**"
+                time_left_str = f"### ⏰🐇 **Zevaxtians tiene menos de {', '.join(time_parts)} antes de que el el sendero de Samael en el Árbol Qlifotico colapse sobre sí mismo y active el ángulo anaretico del Tetraktys sellado en la onceava capa del Zóhar negativo.**"
         
         embed = discord.Embed(
             title=f"📅 {target_event.name}",
@@ -167,78 +133,6 @@ async def tictac(ctx):
 
     except ValueError:
         await ctx.send("Invalid test event ID format in environment file.")
-    except Exception as e:
-        await ctx.send(f"An error occurred while fetching test event information: {str(e)}")
-
-@bot.command()
-async def test_event(ctx):
-
-    if not test_event_id:
-        await ctx.send("El id no esta en el env, pibe")
-        return
-
-    if not test_user_id:
-        await ctx.send("El id de usuario no esta en el env, pibe")
-        return
-    try:
-        event_id = int(test_event_id)
-        
-        events = ctx.guild.scheduled_events
-        
-        target_event = None
-        for event in events:
-            if event.id == event_id:
-                target_event = event
-                break
-        
-        if target_event is None:
-            await ctx.send(f"el evento no existe, pije")
-            return
-        
-        if not target_event.start_time:
-            await ctx.send("ese evento no tiene hora, hijito")
-            return
-        
-        now = datetime.now(target_event.start_time.tzinfo)
-        time_diff = target_event.start_time - now
-        
-        embed = discord.Embed(
-            title=f"📅 {target_event.name}",
-            description=target_event.description or "No description provided",
-            color=0x00ff00
-        )
-        
-        if target_event.start_time:
-            start_time_str = target_event.start_time.strftime("%Y-%m-%d at %H:%M UTC")
-            embed.add_field(name="Start Time", value=start_time_str, inline=False)
-        
-        if target_event.end_time:
-            end_time_str = target_event.end_time.strftime("%Y-%m-%d at %H:%M UTC")
-            embed.add_field(name="End Time", value=end_time_str, inline=False)
-        
-        if hasattr(target_event, 'location') and target_event.location:
-            embed.add_field(name="Location", value=target_event.location, inline=False)
-        
-        embed.add_field(name="Interested Users", value=str(target_event.user_count), inline=True)
-        
-        # event status
-        status_emoji = {
-            discord.EventStatus.scheduled: "⏰",
-            discord.EventStatus.active: "🔴",
-            discord.EventStatus.completed: "✅",
-            discord.EventStatus.cancelled: "❌"
-        }
-        status_text = target_event.status.name.capitalize()
-        embed.add_field(name="Status", value=f"{status_emoji.get(target_event.status, '❓')} {status_text}", inline=True)
-        
-        embed.add_field(name="Event ID", value=str(target_event.id), inline=True)
-        
-        embed.set_footer(text=f"Test Event - Created by {target_event.creator.display_name if target_event.creator else 'Unknown'}")
-        
-        await ctx.send(embed=embed)
-
-    except ValueError:
-        await ctx.send("formato del ID invalido en el archivo de entorno, jaja ese perdedor")
     except Exception as e:
         await ctx.send(f"An error occurred while fetching test event information: {str(e)}")
 
