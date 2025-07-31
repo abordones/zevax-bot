@@ -1,4 +1,7 @@
-import discord
+except ValueError:
+        await ctx.send("Invalid test event ID format in environment file.")
+    except Exception as e:
+        await ctx.send(f"An error occurred while fetching test event information: {str(e)}")import discord
 from discord.ext import commands
 import logging
 import os
@@ -9,13 +12,16 @@ import random
 
 load_dotenv()
 token = os.getenv("BOT_TOKEN")
-test_event_id = os.getenv("TEST_EVENT_ID")
+zevax_event_id = os.getenv("ZEVAX_EVENT_ID")
 image_path = os.getenv("MAIN_IMAGE")
 zevax_user_id = os.getenv("ZEVAX_USER_ID")
+test_event_id = os.getenv("TEST_EVENT_ID")
+test_user_id = os.getenv("TEST_ID_USER")    
 
 handlers = logging.FileHandler(filename='zevaxt-bot.log', encoding='utf-8', mode='w')
 intents = discord.Intents.default()
 intents.message_content = True
+intents.guild_scheduled_events = True
 intents.members = True
 
 bot = commands.Bot(command_prefix='z!', intents=intents, help_command=None)
@@ -78,14 +84,14 @@ async def ping(ctx):
 
 
 @bot.command()
-async def cuanto(ctx):
+async def tiktak(ctx):
 
-    if not test_event_id:
+    if not zevax_event_id:
         await ctx.send("El el id no esta en el env, pibe")
         return
     
     try:
-        event_id = int(test_event_id)
+        event_id = int(zevax_event_id)
         
         events = ctx.guild.scheduled_events
         
@@ -125,7 +131,7 @@ async def cuanto(ctx):
             if not time_parts:
                 time_left_str = "⏰🐇 **EL AZZOTH YA VIENE**"
             else:
-                time_left_str = f"# ⏰🐇 **Zevaxtians tiene menos de {', '.join(time_parts)} antes de que el el sendero de Samael en el Árbol Qlifotico colapse sobre sí mismo y active el ángulo anaretico del Tetraktys sellado en la onceava capa del Zóhar negativo."
+                time_left_str = f"# ⏰🐇 **QUEDAN {', '.join(time_parts)} PARA LA NARCOEJECUCION DEL MARRONAZO DE ZEVAX**"
         
         embed = discord.Embed(
             title=f"📅 {target_event.name}",
@@ -139,11 +145,86 @@ async def cuanto(ctx):
             await ctx.send(file=file, embed=embed)
         else:
             await ctx.send(embed=embed)
-        
+
     except ValueError:
         await ctx.send("Invalid test event ID format in environment file.")
     except Exception as e:
         await ctx.send(f"An error occurred while fetching test event information: {str(e)}")
+
+@bot.command()
+async def test_event(ctx):
+
+    if not test_event_id:
+        await ctx.send("El el id no esta en el env, pibe")
+        return
+
+    if not test_user_id:
+        await ctx.send("El el id de usuario no esta en el env, pibe")
+        return
+    try:
+        event_id = int(test_event_id)
+        
+        events = ctx.guild.scheduled_events
+        
+        target_event = None
+        for event in events:
+            if event.id == event_id:
+                target_event = event
+                break
+        
+        if target_event is None:
+            await ctx.send(f"el evento no existe, pije")
+            return
+        
+        if not target_event.start_time:
+            await ctx.send("ese evento no tiene hora, hijito")
+            return
+        
+        now = datetime.now(target_event.start_time.tzinfo)
+        time_diff = target_event.start_time - now
+        
+        embed = discord.Embed(
+            title=f"📅 {target_event.name}",
+            description=target_event.description or "No description provided",
+            color=0x00ff00
+        )
+        
+        if target_event.start_time:
+            start_time_str = target_event.start_time.strftime("%Y-%m-%d at %H:%M UTC")
+            embed.add_field(name="Start Time", value=start_time_str, inline=False)
+        
+        if target_event.end_time:
+            end_time_str = target_event.end_time.strftime("%Y-%m-%d at %H:%M UTC")
+            embed.add_field(name="End Time", value=end_time_str, inline=False)
+        
+        if hasattr(target_event, 'location') and target_event.location:
+            embed.add_field(name="Location", value=target_event.location, inline=False)
+        
+        embed.add_field(name="Interested Users", value=str(target_event.user_count), inline=True)
+        
+        # event status
+        status_emoji = {
+            discord.EventStatus.scheduled: "⏰",
+            discord.EventStatus.active: "🔴",
+            discord.EventStatus.completed: "✅",
+            discord.EventStatus.cancelled: "❌"
+        }
+        status_text = target_event.status.name.capitalize()
+        embed.add_field(name="Status", value=f"{status_emoji.get(target_event.status, '❓')} {status_text}", inline=True)
+        
+        # Add event ID
+        embed.add_field(name="Event ID", value=str(target_event.id), inline=True)
+        
+        # Set footer
+        embed.set_footer(text=f"Test Event • Created by {target_event.creator.display_name if target_event.creator else 'Unknown'}")
+        
+        await ctx.send(embed=embed)
+
+    except ValueError:
+        await ctx.send("formato del ID invalido en el archivo de entorno, jaja ese perdedor")
+    except Exception as e:
+        await ctx.send(f"An error occurred while fetching test event information: {str(e)}")
+
 
 if __name__ == "__main__":
     webserver.keep_alive()
