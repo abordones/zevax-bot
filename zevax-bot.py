@@ -156,14 +156,7 @@ async def test_event(ctx):
         
     try:
         event_id = int(test_event_id)
-        
-        events = ctx.guild.scheduled_events
-        
-        target_event = None
-        for event in events:
-            if event.id == event_id:
-                target_event = event
-                break
+        target_event = event_id
         
         if target_event is None:
             await ctx.send(f"el evento no existe, pije")
