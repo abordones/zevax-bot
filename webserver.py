@@ -1,14 +1,14 @@
-from flask import Flask, request, jsonify
+from flask import Flask
 from threading import Thread
 
 app = Flask('')
 
 @app.route('/')
-def index():
-    return "Webserver is running!"
+def home():
+    return "⏰🐇"
 
 def run():
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=8080)
 
 def keep_alive():
     server_thread = Thread(target=run)
