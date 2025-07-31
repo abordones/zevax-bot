@@ -13,10 +13,12 @@ zevax_event_id = os.getenv("ZEVAX_EVENT_ID")
 image_path = os.getenv("MAIN_IMAGE")
 zevax_user_id = os.getenv("ZEVAX_USER_ID")
 test_event_id = os.getenv("TEST_EVENT_ID")
+test_user_id = os.getenv("TEST_ID_USER")    
 
 handlers = logging.FileHandler(filename='zevaxt-bot.log', encoding='utf-8', mode='w')
 intents = discord.Intents.default()
 intents.message_content = True
+intents.guild_scheduled_events = True
 intents.members = True
 
 bot = commands.Bot(command_prefix='z!', intents=intents, help_command=None)
@@ -70,6 +72,29 @@ async def on_message(message):
                     await message.reply(file=file, embed=embed)
                 else:
                     await message.reply(embed=embed)
+
+    if test_user_id and str(message.author.id) == test_user_id:
+        random_roll = random.randint(1, 3) # 1 out of 3 chance
+
+        if (random_roll == 1):
+            if (message.content.startswith('z!')):
+                return
+            else:
+                response = "**TESTING**"
+
+                embed = discord.Embed(
+                    title=f"⏰🐇",
+                    description=response,
+                    color=0xff6b35
+                )
+                
+                if image_path and os.path.exists(image_path):
+                    file = discord.File(image_path, filename="event_image.png")
+                    embed.set_image(url="attachment://event_image.png")
+                    await message.reply(file=file, embed=embed)
+                else:
+                    await message.reply(embed=embed)
+
     await bot.process_commands(message)
     
 @bot.command()
@@ -78,16 +103,17 @@ async def ping(ctx):
 
 
 @bot.command()
-async def tiktak(ctx):
+async def tictac(ctx):
 
     if not zevax_event_id:
-        await ctx.send("El el id no esta en el env, pibe")
+        await ctx.send("El id no esta en el env, pibe")
         return
     
     try:
         event_id = int(zevax_event_id)
+        
         events = ctx.guild.scheduled_events
-
+        
         target_event = None
         for event in events:
             if event.id == event_id:
@@ -150,10 +176,15 @@ async def test_event(ctx):
     if not test_event_id:
         await ctx.send("El id no esta en el env, pibe")
         return
-        
+
+    if not test_user_id:
+        await ctx.send("El id de usuario no esta en el env, pibe")
+        return
     try:
         event_id = int(test_event_id)
-
+        
+        events = ctx.guild.scheduled_events
+        
         target_event = None
         for event in events:
             if event.id == event_id:
