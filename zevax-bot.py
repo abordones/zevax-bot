@@ -1,7 +1,4 @@
-except ValueError:
-        await ctx.send("Invalid test event ID format in environment file.")
-    except Exception as e:
-        await ctx.send(f"An error occurred while fetching test event information: {str(e)}")import discord
+import discord
 from discord.ext import commands
 import logging
 import os
@@ -58,7 +55,7 @@ async def on_message(message):
                 responses = [
                     "**NEGRO IMPURO ¿QUE COJONES HACES, ZEVAXTIANS? TIENES POCO TIEMPO PARA ESCRIBIR Y PIERDES TU TIEMPO CON LAS CARNALIDES DEL MUNDO**",
                     "**LA FURIA DEL SEOL CAERA SOBRE TI, ZEVAXTIANS, SI SIGUES PROCASTINANDO COMO UN PUTO FRACASADO**",
-                    "**TUVOS Y VIDRIOS A ESTE PERDEDOR... TUVOS Y VIDRIOS SI NO TERMINAS LA ESCRITURA CALENDARIZADA PARA EL 8 DE SEPTIEMBRE DE 2025 A LAS 3 DE LA TARDE, ZEVAXTIANS**"
+                    "**TUBOS Y VIDRIOS A ESTE PERDEDOR... TUBOS Y VIDRIOS SI NO TERMINAS LA ESCRITURA CALENDARIZADA PARA EL 8 DE SEPTIEMBRE DE 2025 A LAS 3 DE LA TARDE, ZEVAXTIANS**"
                 ]
                 
                 selected_response = random.choice(responses)
@@ -75,7 +72,6 @@ async def on_message(message):
                     await message.reply(file=file, embed=embed)
                 else:
                     await message.reply(embed=embed)
-
     await bot.process_commands(message)
     
 @bot.command()
@@ -212,11 +208,9 @@ async def test_event(ctx):
         status_text = target_event.status.name.capitalize()
         embed.add_field(name="Status", value=f"{status_emoji.get(target_event.status, '❓')} {status_text}", inline=True)
         
-        # Add event ID
         embed.add_field(name="Event ID", value=str(target_event.id), inline=True)
         
-        # Set footer
-        embed.set_footer(text=f"Test Event • Created by {target_event.creator.display_name if target_event.creator else 'Unknown'}")
+        embed.set_footer(text=f"Test Event - Created by {target_event.creator.display_name if target_event.creator else 'Unknown'}")
         
         await ctx.send(embed=embed)
 
@@ -224,7 +218,6 @@ async def test_event(ctx):
         await ctx.send("formato del ID invalido en el archivo de entorno, jaja ese perdedor")
     except Exception as e:
         await ctx.send(f"An error occurred while fetching test event information: {str(e)}")
-
 
 if __name__ == "__main__":
     webserver.keep_alive()
