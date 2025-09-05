@@ -6,11 +6,14 @@ import webserver
 from dotenv import load_dotenv
 from datetime import datetime
 import random
+from ultimatum import ULTIMATUM_TEXT
 
 load_dotenv()
 token = os.getenv("BOT_TOKEN")
 zevax_event_id = os.getenv("ZEVAX_EVENT_ID")
 image_path = os.getenv("MAIN_IMAGE")
+final_image_path = os.getenv("FINAL_IMAGE")
+end_image_path = os.getenv("END_IMAGE")
 zevax_user_id = os.getenv("ZEVAX_USER_ID")
 test_event_id = os.getenv("TEST_EVENT_ID")
 test_user_id = os.getenv("TEST_ID_USER")    
@@ -34,18 +37,14 @@ async def on_message(message):
         return
         
     if zevax_user_id and str(message.author.id) == zevax_user_id:
-        random_roll = random.randint(1, 15) # 1 out of 15 chance
+        random_roll = random.randint(1, 5) # 1 out of 5 chance
 
         if (random_roll == 1):
             if (message.content.startswith('z!')):
                 return
             else:
                 responses = [
-                    "**NEGRO ¿QUE COJONES HACES? TIENES POCO TIEMPO PARA ESCRIBIR Y LO PIERDES CON LAS CARNALIDES DE ESTE MUNDO**",
-                    "**LA FURIA DEL SEOL CAERA SOBRE TI, ZEVAXTIANS, SI SIGUES PROCASTINANDO COMO UN PUTO FRACASADO**",
-                    "**TUBOS Y VIDRIOS A ESTE PERDEDOR... TUBOS Y VIDRIOS SI NO TERMINAS LA ESCRITURA CALENDARIZADA PARA EL 8 DE SEPTIEMBRE DE 2025 A LAS 3 DE LA TARDE, ZEVAXTIANS**",
-                    "**APOCO SI ESO VA A LLENAR TU CV, HIJITO, MEJOR PONTE A ESCRIBIR SI NO QUIERES QUE TE CORTEN LA CABEZA A MACHETAZOS**",
-                    "**¿EN SERIO LE SEGUIRAN HABLANDOLE A ESTE IMPRESENTABLE? ¿QUE NO VEN QUE LO VAN A VIOLAR Y DESMEMBRAR EL 8 DE SEPTIEMBRE DE 2025, SI NO TERMINA SU ESCRITURA?**"
+                    "## MEMENTO MORI"
                 ]
                 
                 selected_response = random.choice(responses)
@@ -53,12 +52,12 @@ async def on_message(message):
                 embed = discord.Embed(
                     title=f"⏰🐇",
                     description=selected_response,
-                    color=0xff6b35
+                    color=0x36060b
                 )
                 
                 if image_path and os.path.exists(image_path):
-                    file = discord.File(image_path, filename="event_image.png")
-                    embed.set_image(url="attachment://event_image.png")
+                    file = discord.File(image_path, filename="3meses.png")
+                    embed.set_image(url="attachment://3meses.png")
                     await message.reply(file=file, embed=embed)
                 else:
                     await message.reply(embed=embed)
@@ -79,10 +78,9 @@ async def tictac(ctx):
     
     try:
         event_id = int(zevax_event_id)
-        
         events = ctx.guild.scheduled_events
-        
         target_event = None
+
         for event in events:
             if event.id == event_id:
                 target_event = event
@@ -98,11 +96,27 @@ async def tictac(ctx):
         
         now = datetime.now(target_event.start_time.tzinfo)
         time_diff = target_event.start_time - now
-        
+        print(f"Time difference: {time_diff}")
+        print(f"{time_diff.total_seconds()=} Seconds")
+        print(f"{time_diff.total_seconds() / 60=} Minutes")
+        print(f"{time_diff.total_seconds() / 3600=} Hours")
+        print(f"{time_diff.total_seconds() / 86400=} Days")
 
         if time_diff.total_seconds() <= 0:
-            time_left_str = "**YA LLEGO TU HORA PUTO FRACASADO**"
-        else:
+            embed = discord.Embed(
+                title=f"# 🔔🔔🔔",
+                description=" ",
+                color=0xff6b35
+            ) 
+
+            if end_image_path and os.path.exists(end_image_path):
+                file = discord.File(end_image_path, filename="eshoy.png")
+                embed.set_image(url="attachment://eshoy.png")
+                await ctx.send(file=file, embed=embed)
+            else:
+                await ctx.send(embed=embed)
+
+        elif time_diff.total_seconds()/86400 > 1: # mas de 1 dia
             days = time_diff.days
             hours, remainder = divmod(time_diff.seconds, 3600)
             minutes, _ = divmod(remainder, 60)
@@ -115,27 +129,58 @@ async def tictac(ctx):
             if minutes > 0:
                 time_parts.append(f"{minutes} MINUTO{'S' if minutes != 1 else ''}")
 
-            if not time_parts:
-                time_left_str = "⏰🐇 **EL AZZOTH YA VIENE**"
+            time_left_str = f"### ⏰🐇 **<@555161083447345155> tiene menos de {', '.join(time_parts)} antes de que el sendero de Samael en el Árbol Qlifotico colapse sobre sí mismo y active el ángulo anaretico del Tetraktys sellado en la onceava capa del Zóhar negativo.**"
+        
+            embed = discord.Embed(
+                title=f"📅 {target_event.name}",
+                description=time_left_str,
+                color=0xff6b35
+            )
+            
+            if image_path and os.path.exists(image_path):
+                file = discord.File(image_path, filename="event_image.png")
+                embed.set_image(url="attachment://event_image.png")
+                await ctx.send(file=file, embed=embed)
             else:
-                time_left_str = f"### ⏰🐇 **<@555161083447345155> tiene menos de {', '.join(time_parts)} antes de que el el sendero de Samael en el Árbol Qlifotico colapse sobre sí mismo y active el ángulo anaretico del Tetraktys sellado en la onceava capa del Zóhar negativo.**"
-        
-        embed = discord.Embed(
-            title=f"📅 {target_event.name}",
-            description=time_left_str,
-            color=0xff6b35
-        )
-        
-        if image_path and os.path.exists(image_path):
-            file = discord.File(image_path, filename="event_image.png")
-            embed.set_image(url="attachment://event_image.png")
-            await ctx.send(file=file, embed=embed)
-        else:
-            await ctx.send(embed=embed)
+                await ctx.send(embed=embed)
+
+        elif (time_diff.days == 0 and time_diff.seconds >= 3600): # entre 1 hora y 24 horas
+            longahh = ULTIMATUM_TEXT
+            
+            for i, line in enumerate(longahh):
+                embed = discord.Embed(
+                    title=f"🔔🔔🔔",
+                    description=line,
+                    color=0x36060b
+                )
+
+                if i == len(longahh) - 1 and final_image_path and os.path.exists(final_image_path):
+                    file = discord.File(final_image_path, filename="1dia.png")
+                    embed.set_image(url="attachment://1dia.png")
+                    await ctx.send(file=file, embed=embed)
+                else:
+                    await ctx.send(embed=embed)
+        else: # ultima hora
+            hours, remainder = divmod(time_diff.seconds, 3600)
+            minutes, _ = divmod(remainder, 60)
+            
+            embed = discord.Embed(
+                title=f"🔔🔔🔔",
+                description=f"**{minutes} MINUTOS**",
+                color=0xff0000
+            )
+            
+            if final_image_path and os.path.exists(final_image_path):
+                file = discord.File(final_image_path, filename="1dia.png")
+                embed.set_image(url="attachment://1dia.png")
+                await ctx.send(file=file, embed=embed)
+            else:
+                await ctx.send(embed=embed)
 
     except ValueError:
         await ctx.send("Invalid test event ID format in environment file.")
     except Exception as e:
+        print(f"Error fetching event: {str(e)}")
         await ctx.send(f"An error occurred while fetching test event information: {str(e)}")
 
 if __name__ == "__main__":
