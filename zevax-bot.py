@@ -6,7 +6,7 @@ import webserver
 from dotenv import load_dotenv
 from datetime import datetime
 import random
-from textacos import ULTIMATUM_TEXT, APOCALYPSE_TEXT
+from textacos import APOCALYPSE_TEXT
 
 load_dotenv()
 token = os.getenv("BOT_TOKEN")
@@ -16,6 +16,7 @@ forec_event_id = os.getenv("FOREC_EVENT_ID")
 image_path = os.getenv("FOREC_IMAGE")
 final_image_path = os.getenv("FINAL_IMAGE")
 end_image_path = os.getenv("END_IMAGE")
+
 zevax_user_id = os.getenv("ZEVAX_USER_ID")
 test_event_id = os.getenv("TEST_EVENT_ID")
 test_user_id = os.getenv("TEST_ID_USER")    
@@ -81,12 +82,12 @@ async def tictac(ctx):
 @bot.command()
 async def df(ctx):
 
-    if not test_event_id:
+    if not forec_event_id :
         await ctx.send("El id no esta en el env, pibe")
         return
     
     try:
-        event_id = int(test_event_id)
+        event_id = int(forec_event_id)
         events = ctx.guild.scheduled_events
         target_event = None
 
@@ -105,6 +106,8 @@ async def df(ctx):
         
         now = datetime.now(target_event.start_time.tzinfo)
         time_diff = target_event.start_time - now
+
+        # weas para ver si el tiempo esta bien
         print(f"Time difference: {time_diff}")
         print(f"{time_diff.total_seconds()=} Seconds")
         print(f"{time_diff.total_seconds() / 60=} Minutes")
@@ -127,7 +130,7 @@ async def df(ctx):
 
         else: # mas de 1 dia
             longahh = APOCALYPSE_TEXT
-            full_text = "\n".join(longahh)
+            full_text = "\n\n".join(longahh)
             
             embed = discord.Embed(
                 title=f"**{time_diff.total_seconds() / 86400:.0f} Días**",
