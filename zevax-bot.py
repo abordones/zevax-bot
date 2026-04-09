@@ -10,14 +10,10 @@ from textacos import APOCALYPSE_TEXT
 
 load_dotenv()
 token = os.getenv("BOT_TOKEN")
-zevax_event_id = os.getenv("ZEVAX_EVENT_ID")
 forec_event_id = os.getenv("FOREC_EVENT_ID")
 
 image_path = os.getenv("FOREC_IMAGE")
-final_image_path = os.getenv("FINAL_IMAGE")
-end_image_path = os.getenv("END_IMAGE")
 
-zevax_user_id = os.getenv("ZEVAX_USER_ID")
 test_event_id = os.getenv("TEST_EVENT_ID")
 test_user_id = os.getenv("TEST_ID_USER")    
 
