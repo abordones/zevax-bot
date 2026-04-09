@@ -6,12 +6,14 @@ import webserver
 from dotenv import load_dotenv
 from datetime import datetime
 import random
-from ultimatum import ULTIMATUM_TEXT
+from textacos import ULTIMATUM_TEXT, APOCALYPSE_TEXT
 
 load_dotenv()
 token = os.getenv("BOT_TOKEN")
 zevax_event_id = os.getenv("ZEVAX_EVENT_ID")
-image_path = os.getenv("MAIN_IMAGE")
+forec_event_id = os.getenv("FOREC_EVENT_ID")
+
+image_path = os.getenv("FOREC_IMAGE")
 final_image_path = os.getenv("FINAL_IMAGE")
 end_image_path = os.getenv("END_IMAGE")
 zevax_user_id = os.getenv("ZEVAX_USER_ID")
@@ -30,6 +32,8 @@ bot = commands.Bot(command_prefix='z!', intents=intents, help_command=None)
 async def on_ready():
     print(f'Logged in as {bot.user.name} - {bot.user.id}')
 
+''' 
+respuesta aleatoria
 
 @bot.event
 async def on_message(message):
@@ -63,21 +67,26 @@ async def on_message(message):
                     await message.reply(embed=embed)
 
     await bot.process_commands(message)
+'''
     
 @bot.command()
 async def ping(ctx):
     await ctx.send(f'toy aca')
 
-
 @bot.command()
 async def tictac(ctx):
+    await ctx.send(f'ommmmmmm :person_in_lotus_position:')
 
-    if not zevax_event_id:
+
+@bot.command()
+async def df(ctx):
+
+    if not test_event_id:
         await ctx.send("El id no esta en el env, pibe")
         return
     
     try:
-        event_id = int(zevax_event_id)
+        event_id = int(test_event_id)
         events = ctx.guild.scheduled_events
         target_event = None
 
@@ -104,7 +113,7 @@ async def tictac(ctx):
 
         if time_diff.total_seconds() <= 0:
             embed = discord.Embed(
-                title=f"# 🔔🔔🔔",
+                title=f" ",
                 description=" ",
                 color=0xff6b35
             ) 
@@ -116,27 +125,16 @@ async def tictac(ctx):
             else:
                 await ctx.send(embed=embed)
 
-        elif time_diff.total_seconds()/86400 > 1: # mas de 1 dia
-            days = time_diff.days
-            hours, remainder = divmod(time_diff.seconds, 3600)
-            minutes, _ = divmod(remainder, 60)
+        else: # mas de 1 dia
+            longahh = APOCALYPSE_TEXT
+            full_text = "\n".join(longahh)
             
-            time_parts = []
-            if days > 0:
-                time_parts.append(f"{days} DIA{'S' if days != 1 else ''}")
-            if hours > 0:
-                time_parts.append(f"{hours} HORA{'S' if hours != 1 else ''}")
-            if minutes > 0:
-                time_parts.append(f"{minutes} MINUTO{'S' if minutes != 1 else ''}")
-
-            time_left_str = f"### ⏰🐇 **<@555161083447345155> tiene menos de {', '.join(time_parts)} antes de que el sendero de Samael en el Árbol Qlifotico colapse sobre sí mismo y active el ángulo anaretico del Tetraktys sellado en la onceava capa del Zóhar negativo.**"
-        
             embed = discord.Embed(
-                title=f"📅 {target_event.name}",
-                description=time_left_str,
-                color=0xff6b35
+                title=f"**{time_diff.total_seconds() / 86400:.0f} Días**",
+                description=full_text,
+                color=0x000000
             )
-            
+
             if image_path and os.path.exists(image_path):
                 file = discord.File(image_path, filename="event_image.png")
                 embed.set_image(url="attachment://event_image.png")
@@ -144,38 +142,6 @@ async def tictac(ctx):
             else:
                 await ctx.send(embed=embed)
 
-        elif (time_diff.days == 0 and time_diff.seconds >= 3600): # entre 1 hora y 24 horas
-            longahh = ULTIMATUM_TEXT
-            
-            for i, line in enumerate(longahh):
-                embed = discord.Embed(
-                    title=f"🔔🔔🔔",
-                    description=line,
-                    color=0x36060b
-                )
-
-                if i == len(longahh) - 1 and final_image_path and os.path.exists(final_image_path):
-                    file = discord.File(final_image_path, filename="1dia.png")
-                    embed.set_image(url="attachment://1dia.png")
-                    await ctx.send(file=file, embed=embed)
-                else:
-                    await ctx.send(embed=embed)
-        else: # ultima hora
-            hours, remainder = divmod(time_diff.seconds, 3600)
-            minutes, _ = divmod(remainder, 60)
-            
-            embed = discord.Embed(
-                title=f"🔔🔔🔔",
-                description=f"**{minutes} MINUTOS**",
-                color=0xff0000
-            )
-            
-            if final_image_path and os.path.exists(final_image_path):
-                file = discord.File(final_image_path, filename="1dia.png")
-                embed.set_image(url="attachment://1dia.png")
-                await ctx.send(file=file, embed=embed)
-            else:
-                await ctx.send(embed=embed)
 
     except ValueError:
         await ctx.send("Invalid test event ID format in environment file.")
